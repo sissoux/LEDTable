@@ -47,7 +47,7 @@ class Snake : public Game
 
     Snake();
     int8_t move();
-    bool Paused = true; //Paused by default for easy start
+    //bool Paused = true; //Paused by default for easy start
 
   private:
     void setDirection(SnakeDirection Dir);

@@ -48,7 +48,7 @@ void Snake::cmdLeft()
 
 void Snake::cmdStart()
 {
-  Paused != Paused;
+  Paused = !Paused;
 }
 
 void Snake::update()

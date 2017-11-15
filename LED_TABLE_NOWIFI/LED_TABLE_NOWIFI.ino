@@ -127,6 +127,14 @@ void DisplayScore(uint16_t Score)
   }
 }
 
+void DisplayScore(char* Text)
+{
+  ScoreDisplay.clear();
+  ScoreDisplay.setCursor(0, 0);
+  ScoreDisplay.print(Text);
+  ScoreDisplay.writeDisplay();
+}
+
 
 void resetTimers()
 {
@@ -166,28 +174,20 @@ void TaskManager()
         switch ((Controller_cmd)i)
         {
           case CrossUp: CurrentGame->cmdUp();
-            Serial.println("Up");
             break;
           case CrossDown: CurrentGame->cmdDown();
-            Serial.println("Down");
             break;
           case CrossLeft: CurrentGame->cmdLeft();
-            Serial.println("Left");
             break;
           case CrossRight: CurrentGame->cmdRight();
-            Serial.println("Right");
             break;
           case A: CurrentGame->cmdA();
-            Serial.println("A");
             break;
           case B: CurrentGame->cmdB();
-            Serial.println("B");
             break;
           case Select: NextMode = true;
-            Serial.println("Select");
             break;
           case Start: CurrentGame->cmdStart();
-            Serial.println("Start");
             break;
           default:
             break;
@@ -228,14 +228,12 @@ void TaskManager()
   {
     DisplayRefreshTimer = 0;
 
-    if (strcmp(CurrentGame->Name, "TheCakeIsALie") != 0 && !CurrentGame->Paused)  //If we are in a running game ==> we cannot change currentMode by mistake, Display of the score is also updated
+    if (strcmp(CurrentGame->Name, "TheCakeIsALie") != 0 && !(CurrentGame->Paused))  //If we are in a running game ==> we cannot change currentMode by mistake, Display of the score is also updated
     {
-      Serial.println("Here");
       ScrollClear();
       CurrentGame->drawBoard(MainMatrix.OutputBuffer);
-      DisplayScore(SecondCounter);
-      // Update secondary matrix with current score
-
+      DisplayScore(MyClock.Minute);
+      if (NextMode) NextMode = false;
     }
     else
     {
@@ -269,6 +267,7 @@ void TaskManager()
 
         case Snake:
           CurrentGame->drawBoard(MainMatrix.OutputBuffer);
+          if ((CurrentGame->Paused && ScrollLoops == 0)) DisplayScore("Pause");
           if (NextMode)
           {
             MainMatrix.clear();
