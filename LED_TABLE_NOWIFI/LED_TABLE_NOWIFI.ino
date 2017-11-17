@@ -41,6 +41,8 @@ uint8_t ScrollRate = 70;  //ms between scroll steps
 int16_t LimitIndex = 0;
 int16_t ScrollIndex = 0;
 String ScrollText;
+uint8_t currentHue = 0;
+uint16_t Starting = START_ANIMATION_DURATION;
 
 typedef enum {
   Snake,
@@ -49,7 +51,8 @@ typedef enum {
   Temp,
   Ambient,
   Music,
-  Standby
+  Standby,
+  StartAnimation
 } Mode;
 
 Mode CurrentMode = Standby;
@@ -58,6 +61,7 @@ bool NextMode = false;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
+  Serial1.begin(115200);
   FastLED.addLeds<LED_TYPE, DATA_PIN, CLOCK_PIN, BGR>(MainMatrix.leds, NUM_LEDS);
   ScoreDisplay.begin(0x72, 0x71);
   ScoreDisplay.setRotation(3);
@@ -240,8 +244,23 @@ void TaskManager()
 
       switch (CurrentMode)
       {
+        case StartAnimation:
+
+          EVERY_N_MILLISECONDS( 20 ) {
+            currentHue++;  // slowly cycle the "base color" through the rainbow
+          }
+          fill_rainbow( MainMatrix.leds, NUM_LEDS, currentHue, 7);
+          Starting--;
+          if (NextMode || !Starting)
+          {
+            MainMatrix.clear();
+            NextMode = false;
+            CurrentMode = Standby;
+          }
+          break;
         case Standby:
           MainMatrix.clear();
+          MainMatrix.drawPixel(0, 0, CRGB::Red);
           if (NextMode)
           {
             MainMatrix.clear();
@@ -288,6 +307,10 @@ void TaskManager()
   }
 }
 
+void PlaySound()
+{
+  Serial.println("PLAY SOUND");
+}
 
 
 
