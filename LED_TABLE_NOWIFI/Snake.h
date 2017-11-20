@@ -30,7 +30,7 @@ class Snake : public Game
     uint8_t Body[MAX_SIZE]; //Define Body max size as matrix size. Head is Cell 0
     uint8_t Apple = 0;
     bool AppleCaught = false;
-    uint16_t Score = 0;
+    //uint16_t Score = 0;
     CHSV AppleColor;
     CHSV HeadColor;
     CHSV BodyColor;

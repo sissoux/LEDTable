@@ -11,7 +11,7 @@
 
 #define FANCY_START
 
-#define NUM_LEDS 144
+#define NUM_LEDS 200
 #define DATA_PIN 13
 #define CLOCK_PIN 14
 #define LED_TYPE APA102

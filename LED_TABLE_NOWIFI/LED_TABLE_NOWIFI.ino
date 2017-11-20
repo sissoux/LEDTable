@@ -8,6 +8,7 @@
 #include "Snake.h"
 #include <Wire.h>
 #include "NESController.h"
+#include <ArduinoJson.h>
 
 FastMatrix10x20 MainMatrix;
 DotMatrix8x32 ScoreDisplay = DotMatrix8x32();
@@ -55,7 +56,7 @@ typedef enum {
   StartAnimation
 } Mode;
 
-Mode CurrentMode = Standby;
+Mode CurrentMode = StartAnimation;
 bool NextMode = false;
 
 void setup() {
@@ -65,6 +66,7 @@ void setup() {
   FastLED.addLeds<LED_TYPE, DATA_PIN, CLOCK_PIN, BGR>(MainMatrix.leds, NUM_LEDS);
   ScoreDisplay.begin(0x72, 0x71);
   ScoreDisplay.setRotation(3);
+  MainMatrix.setRotation(2);
   Controller.begin();
   ScrollSet("Retro Gaming table - VisionOfLight design", 1);
   resetTimers();
@@ -236,7 +238,7 @@ void TaskManager()
     {
       ScrollClear();
       CurrentGame->drawBoard(MainMatrix.OutputBuffer);
-      DisplayScore(MyClock.Minute);
+      DisplayScore(CurrentGame->Score);
       if (NextMode) NextMode = false;
     }
     else
@@ -251,6 +253,7 @@ void TaskManager()
           }
           fill_rainbow( MainMatrix.leds, NUM_LEDS, currentHue, 7);
           Starting--;
+          FastLED.show();
           if (NextMode || !Starting)
           {
             MainMatrix.clear();
@@ -258,9 +261,10 @@ void TaskManager()
             CurrentMode = Standby;
           }
           break;
+          
         case Standby:
           MainMatrix.clear();
-          MainMatrix.drawPixel(0, 0, CRGB::Red);
+          MainMatrix.drawPixel(10, 9, CRGB::Red);
           if (NextMode)
           {
             MainMatrix.clear();
@@ -303,13 +307,21 @@ void TaskManager()
           break;
       }
     }
-    MainMatrix.writeDisplay();
+    if (CurrentMode!=StartAnimation) MainMatrix.writeDisplay();
   }
 }
 
 void PlaySound()
 {
-  Serial.println("PLAY SOUND");
+  DynamicJsonBuffer jsonBuffer;
+  JsonObject& root = jsonBuffer.createObject();
+
+  root["Cmd"] = "play";
+  root["GameName"] = "Tetris";
+  root["Volume"] = 128;
+
+  root.printTo(Serial);
+  Serial.println();
 }
 
 

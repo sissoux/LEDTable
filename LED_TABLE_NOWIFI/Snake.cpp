@@ -17,11 +17,12 @@ void Snake::setDirection(SnakeDirection Dir)
 {
   switch (Direction) //We check first that we are not turning back
   {
-    case Up: if (Dir != Down) return;
-    case Down: if (Dir != Up) return;
-    case Right: if (Dir != Left) return;
-    case Left: if (Dir != Right) return;
+    case Up: if (Dir == Down) return; break;
+    case Down: if (Dir == Up) return; break;
+    case Right: if (Dir == Left) return; break;
+    case Left: if (Dir == Right) return; break;
   }
+  Serial.println(Dir);
   Direction = Dir;
 }
 
@@ -130,7 +131,11 @@ int8_t Snake::move()
       }
     }
     this->Body[0] = Head;
-    if (AppleCaught) resetApple();
+    if (AppleCaught)
+    {
+      resetApple();
+      Score += 100;
+    }
     AppleCaught = false;
   }
 }
@@ -179,7 +184,7 @@ void Snake::drawBoard(CRGB Buffer[][COLUMN_COUNT])
       for (uint8_t y = 0; y < N_ROW; y++)
       {
         uint8_t CurrentPoint = y * N_ROW + x;
-        CRGB CurrentColor = CRGB(0, 0, 0);
+        CRGB CurrentColor = CRGB(0, 100, 255);
         if (CurrentPoint == Apple) CurrentColor = AppleColor;
         else if (CurrentPoint == Body[0]) CurrentColor = HeadColor;
         else
@@ -203,10 +208,10 @@ void Snake::drawBoard(CRGB Buffer[][COLUMN_COUNT])
         {
           uint8_t CurrentPoint = y * N_ROW + x;
           CRGB CurrentColor = CRGB(0, 0, 0);
-          if (CurrentPoint == ResetStep ) 
+          if (CurrentPoint == ResetStep )
           {
             CurrentColor = CHSV(random(0, 255), random(0, 255), 255);
-          Buffer[y + 1][x + 1] = CurrentColor;
+            Buffer[y + 1][x + 1] = CurrentColor;
           }
         }
       }

@@ -167,9 +167,9 @@ void FastMatrix10x20::printDigit(uint8_t n, uint16_t X, uint16_t Y)
     for (uint8_t y = 0; y < 5; y++)
     {
       uint8_t index = x + 3 * y;
-      if (((numbertable[n] >> index) & 1)==1) 
+      if (((numbertable[n] >> index) & 1) == 1)
       {
-        drawPixel(X + x, Y + y, CRGB(255, 0, 0));
+        drawPixel(COLUMN_COUNT - 1 - (Y + y), X + x, CRGB::Blue);
       }
     }
   }
@@ -177,11 +177,11 @@ void FastMatrix10x20::printDigit(uint8_t n, uint16_t X, uint16_t Y)
 
 void FastMatrix10x20::writeTime(uint8_t H, uint8_t M)
 {
-  printDigit(H/10,0,2);
-  printDigit(H%10,4,2);
-  printDigit(10,8,2);
-  printDigit(M/10,12,2);
-  printDigit(M%10,16,2);
+    printDigit(H/10,0,2);
+    printDigit(H%10,4,2);
+    printDigit(10,8,2);
+    printDigit(M/10,12,2);
+    printDigit(M%10,16,2);
 }
 
 
@@ -251,6 +251,10 @@ void FastMatrix10x20::drawPixel(int16_t x, int16_t y, const struct CRGB& color)
 
   if ((y < 0) || (y >= ROW_COUNT)) return;
   if ((x < 0) || (x >= COLUMN_COUNT)) return;
+  /*//Serial.print("Write to Buffer. x = ");
+    //Serial.print(x);
+    Serial.print(", y = ");
+    Serial.println(y);*/
   OutputBuffer[y][x] = color;
 }
 
