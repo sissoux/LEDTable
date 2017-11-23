@@ -62,7 +62,7 @@ bool NextMode = false;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
-  Serial1.begin(115200);
+  //Serial1.begin(115200);
   FastLED.addLeds<LED_TYPE, DATA_PIN, CLOCK_PIN, BGR>(MainMatrix.leds, NUM_LEDS);
   ScoreDisplay.begin(0x72, 0x71);
   ScoreDisplay.setRotation(3);

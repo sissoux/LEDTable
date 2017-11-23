@@ -7,8 +7,8 @@
 
 
 #define MAX_SIZE N_ROW*N_COLUMN
-#define DEFAULT_SNAKE_RATE 1000 // Move every second
-#define MIN_SNAKE_RATE 100
+#define DEFAULT_SNAKE_RATE 400 // Move every second
+#define MIN_SNAKE_RATE 50
 
 // Game Matrix is build this way: 0-----------> N_COLUMN-1
 //                                 ----------->
@@ -34,7 +34,7 @@ class Snake : public Game
     CHSV AppleColor;
     CHSV HeadColor;
     CHSV BodyColor;
-    void drawBoard(CRGB Buffer[][COLUMN_COUNT]);
+    void drawBoard(CRGB Buffer[][N_COLUMN]);
     void endGame();
     void restartGame();
 

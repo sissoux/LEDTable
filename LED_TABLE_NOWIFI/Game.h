@@ -11,7 +11,7 @@ class Game
   public:
     const char* Name;
     uint16_t Score = 0;
-    uint16_t Rate = 1500;
+    uint16_t Rate = 500;
     bool Paused = true; //Paused by default for easy start
     Game();
     Game(char* GameName);

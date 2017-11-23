@@ -29,22 +29,22 @@ void Snake::setDirection(SnakeDirection Dir)
 
 void Snake::cmdUp()
 {
-  this->setDirection(Up);
+  this->setDirection(Down);
 }
 
 void Snake::cmdDown()
 {
-  this->setDirection(Down);
+  this->setDirection(Up);
 }
 
 void Snake::cmdRight()
 {
-  this->setDirection(Right);
+  this->setDirection(Left);
 }
 
 void Snake::cmdLeft()
 {
-  this->setDirection(Left);
+  this->setDirection(Right);
 }
 
 void Snake::cmdStart()
@@ -71,27 +71,27 @@ int8_t Snake::move()
         {
           Head = Head + (N_COLUMN * (N_ROW - 1));
         }
-        else Head = Head - (N_COLUMN - 1);
+        else Head = Head - (N_COLUMN);
         break;
 
       case Down:
-        if (Head / N_COLUMN == 0) //We are on lower edge
+        if (Head / N_COLUMN == N_ROW-1) //We are on lower edge
         {
           Head = Head - (N_COLUMN * (N_ROW - 1));
         }
-        else Head = Head + (N_COLUMN - 1);
+        else Head = Head + (N_COLUMN);
         break;
 
       case Left:
-        if ((Head + 1) % N_COLUMN == 0) //We are on left edge
+        if ((Head) % N_COLUMN == 0) //We are on left edge
         {
-          Head = Head + (N_COLUMN - 1);
+          Head = Head + (N_COLUMN -1);
         }
         else Head = Head - 1;
         break;
 
       case Right:
-        if ((Head + 1) % N_COLUMN == 0) //We are on right edge
+        if ((Head) % N_COLUMN == 9) //We are on right edge
         {
           Head = Head - (N_COLUMN - 1);
         }
@@ -134,7 +134,6 @@ int8_t Snake::move()
     if (AppleCaught)
     {
       resetApple();
-      Score += 100;
     }
     AppleCaught = false;
   }
@@ -164,7 +163,6 @@ void Snake::resetApple()
 
 void Snake::endGame()
 {
-  // If something to kill
   Paused = true;
   resetBody();
   resetApple();
@@ -175,7 +173,7 @@ void Snake::restartGame()
   IsReseting = true;
 }
 
-void Snake::drawBoard(CRGB Buffer[][COLUMN_COUNT])
+void Snake::drawBoard(CRGB Buffer[][N_COLUMN])
 {
   if (!IsReseting)
   {
@@ -183,8 +181,8 @@ void Snake::drawBoard(CRGB Buffer[][COLUMN_COUNT])
     {
       for (uint8_t y = 0; y < N_ROW; y++)
       {
-        uint8_t CurrentPoint = y * N_ROW + x;
-        CRGB CurrentColor = CRGB(0, 100, 255);
+        uint8_t CurrentPoint = y * N_COLUMN + x;
+        CRGB CurrentColor = CRGB(0, 0, 0);
         if (CurrentPoint == Apple) CurrentColor = AppleColor;
         else if (CurrentPoint == Body[0]) CurrentColor = HeadColor;
         else
@@ -194,7 +192,7 @@ void Snake::drawBoard(CRGB Buffer[][COLUMN_COUNT])
             if (CurrentPoint == Body[i]) CurrentColor = BodyColor;
           }
         }
-        Buffer[y + 1][x + 1] = CurrentColor;
+        Buffer[y][x] = CurrentColor;
       }
     }
   }
@@ -206,12 +204,12 @@ void Snake::drawBoard(CRGB Buffer[][COLUMN_COUNT])
       {
         for (uint8_t y = 0; y < N_ROW; y++)
         {
-          uint8_t CurrentPoint = y * N_ROW + x;
+          uint8_t CurrentPoint = y * N_COLUMN + x;
           CRGB CurrentColor = CRGB(0, 0, 0);
           if (CurrentPoint == ResetStep )
           {
             CurrentColor = CHSV(random(0, 255), random(0, 255), 255);
-            Buffer[y + 1][x + 1] = CurrentColor;
+            Buffer[y][x] = CurrentColor;
           }
         }
       }
@@ -219,6 +217,14 @@ void Snake::drawBoard(CRGB Buffer[][COLUMN_COUNT])
     }
     else
     {
+      for (uint8_t x = 0; x < N_COLUMN; x++)    //We check each pixel, if it's supposed to be ON : Set corresponding LED ON, else turn it off
+      {
+        for (uint8_t y = 0; y < N_ROW; y++)
+        {
+            Buffer[y][x] = CRGB(0, 0, 0);
+          
+        }
+      }
       resetBody();
       resetApple();
       IsReseting = false;

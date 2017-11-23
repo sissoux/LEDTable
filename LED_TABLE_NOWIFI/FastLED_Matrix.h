@@ -34,7 +34,7 @@ class FastMatrix10x20 : public Adafruit_GFX {
     void init(uint8_t a);
 
   protected:
-    // Mapping is used to convert Pixel coordinates {Col;Row} to pixel strip number. if value = 150 ==> No LED
+    // Mapping is used to convert Pixel coordinates {Col;Row} to pixel strip number. 
     uint8_t Mapping[ROW_COUNT][COLUMN_COUNT] =
     {
       {19, 20, 59, 60, 99, 100, 139, 140, 179, 180},
